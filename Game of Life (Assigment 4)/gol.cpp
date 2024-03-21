@@ -1,3 +1,9 @@
+/**
+ * Joseph Scarnecchia
+ * 03-21-2024
+ * Assignment 4, CSIC
+*/
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -35,6 +41,9 @@ int main() {
         printGrid(grid);
         Sleep(100); // Pauses execution for a short period
     }
+
+    cout << "Terminating simulation" << endl;
+    Sleep(3000);
 
     return 0;
 }
