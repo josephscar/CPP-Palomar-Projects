@@ -6,8 +6,8 @@
 using namespace std;
 
 // Global variables defining the grid size
-int rows = 10;
-int columns = 10;
+int rows = 30;
+int columns = 30;
 
 // Function prototypes
 void initialize(vector<vector<string>> &grid);
@@ -55,6 +55,7 @@ void initialize(vector<vector<string>> &grid) {
     cin >> r;
     srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
 
+    // Randomize grid
     if (r == "r" || r == "R") {
         cout << "Randomizing the first generation..." << endl;
         Sleep(500);
@@ -64,34 +65,46 @@ void initialize(vector<vector<string>> &grid) {
                 grid[row][column] = (rand() % 2 == 0 ? 'o' : '-');
             }
         }
+    // Manually input the grid
     } else {
         // Allow the user to manually specify the state of each row in the grid
         for (int row = 0; row < rows; row++) {
-            string config;
+            string config = "";
             cout << "Enter initial cells for row " << row + 1 << " [-]dead, [o]alive, [r]randomize row: "; 
             cin >> config;
 
             for (int column = 0; column < config.length(); column++) {
                 // Validate input or randomize if invalid
                 if ((config[column] != 'o' && config[column] != '-') || config.length() > rows) {
-                    cout << (config[column] == 'r' ? "Randomizing the row" : "Invalid inputs generate a random row.") << endl;
+
+                    // Randomize the row
+                    cout << (config == "r" ? "Randomizing the row" : "Invalid inputs generate a random row.") << endl;
                     Sleep(500);
-                    config = "----------";
+                    config = "";
+                    // Set config to a dead row with "rows" amount of cells; this is an nxn grid so cell per row = # of rows
+                    for (int z = 0; z < rows; z++) {
+                        config += "-";
+                    }
+
+                    // Randomize with 50% cell state
                     for (int cell = 0; cell < config.length(); cell++) {
                         config[cell] = (rand() % 2 == 0 ? 'o' : '-');
                     }
                 }
             }
 
+            // Configure the row based on user input or randomization
             for (int column = 0; column < config.length(); column++) {
                 grid[row][column] = config[column];
             }
 
-            grid.resize(rows, vector<string>(columns, config));
+            // Update the grid
             system("cls");
             printGrid(grid);
         }
     }
+
+    // Exit intialization process
     cout << "Initializing simulation..." << endl;
     Sleep(750);
 }
@@ -102,6 +115,8 @@ void initialize(vector<vector<string>> &grid) {
  * @param grid The simulation grid, passed by reference.
  */
 void printGrid(vector<vector<string>> &grid) {
+
+    // Iterates over the x,y coordinates and prints the grid with spaces in between
     for (int xi = 0; xi < rows; xi++) {
         for (int yj = 0; yj < columns; yj++) {
             cout << grid[xi][yj] << " ";
@@ -119,7 +134,11 @@ void printGrid(vector<vector<string>> &grid) {
  * @return The count of alive neighbors.
  */
 int countNeighbors(vector<vector<string>> &grid, int x, int y) {
+
     int count = 0;
+
+    // All neighbors are a pair of coordinates with offsets ranging from -1 to 1.
+    // Iterate through all possible offsets and count if there is an alive cell
     for (int xi = -1; xi <= 1; xi++) {
         for (int yj = -1; yj <= 1; yj++) {
             if (xi == 0 && yj == 0) continue; // Skip the cell itself
@@ -146,15 +165,16 @@ void updateGrid(vector<vector<string>> &grid) {
 
     for (int xi = 0; xi < rows; xi++) {
         for (int yj = 0; yj < columns; yj++) {
+            // Count the neighbors
             int liveNeighbors = countNeighbors(grid, xi, yj);
 
             if (grid[xi][yj] == "o") {
-                // Apply rules for alive cells
+                // Kill the cell based on under or over population
                 if (liveNeighbors < 2 || liveNeighbors > 3) {
                     buffer[xi][yj] = "-"; // Cell dies
                 }
             } else {
-                // Apply rules for dead cells
+                // Produce a cell if there are exactly 3 neighbors
                 if (liveNeighbors == 3) {
                     buffer[xi][yj] = "o"; // Cell becomes alive
                 }
