@@ -1,34 +1,86 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <windows.h>
 
 using namespace std;
 
-vector<vector<string>> grid;
-int height = 10;
-int width = 10;
 
-void initialize();
-void printGrid();
-int countNeighbors(int x, int y);
+int rows = 10;
+int columns = 10;
+
+void initialize(vector<vector<string>> &grid);
+void printGrid(vector<vector<string>> &grid);
+int countNeighbors(vector<vector<string>> &grid, int x, int y);
+void updateGrid(vector<vector<string>> &grid);
 
 // Initialize the grid with a random setup
-void initialize() {
-    srand(static_cast<unsigned int>(time(0)));
-    grid.resize(height, vector<string>(width, "-"));
-    // Simple initial pattern
-    for (auto& row : grid) {
-        generate(row.begin(), row.end(), []() {return rand() % 10 == 0 ? 'o' : '-';});
+void initialize(vector<vector<string>> &grid) {
+
+    grid.resize(rows, vector<string>(columns, "-"));
+    printGrid(grid);
+
+    char choice;
+    bool rstate = false;
+    string r = "";
+
+    cout << "[r] for random grid, [other key] for self input: ";
+    cin >> r;
+
+    if (r == "r") {
+        cout << "Randomizing the first generation..." << endl;
+        Sleep(500);
+        for (int row = 0; row < rows; row++) {
+
+            for (int column = 0; column < columns; column++) {
+
+                grid[row][column] = (rand() % 10 == 0? 'o' : '-');
+            }
+        }
+
+    } else {
+
+        for (int row = 0; row < rows; row++) {
+        
+            string config = "";
+            cout << "Enter intial cells for row " << row + 1 << " [-]dead [o]alive [r]randomize row: "; 
+            cin >> config;
+            cout << endl;
+
+            srand(static_cast<unsigned int>(time(0)));
+
+            for (int column = 0; column < config.length(); column++) {
+
+                if ((config[column] != 'o' && config[column] != '-') || config.length() > 10){
+                    cout << (config[column] == 'r' ? "Randomizing the row" : "Invalid inputs generate a random row.") << endl;
+                    Sleep(1000);
+                    config = "----------";
+
+                    for (int cell = 0; cell < config.length(); cell++) {
+                        config[cell] = (rand() % 2 == 0 ? 'o' : '-');
+                    }
+                } 
+
+            }
+
+            for (int column = 0; column < config.length(); column++) {
+                grid[row][column] = config[column];
+            }
+
+            grid.resize(rows, vector<string>(columns, config));
+            system("cls");
+            printGrid(grid);
+        }
     }
-    printGrid();
+    cout << "Initializing simulation." << endl;
+    Sleep(1000);
+
 }
 
 // Print the grid
-void printGrid() {
-    for (int xi = 0; xi < height; xi++) {
-        for (int yj = 0; yj < width; yj++) {
+void printGrid(vector<vector<string>> &grid) {
+    for (int xi = 0; xi < rows; xi++) {
+        for (int yj = 0; yj < columns; yj++) {
             cout << grid[xi][yj] << " ";
         }
         cout << endl;
@@ -36,7 +88,7 @@ void printGrid() {
 }
 
 // Count living neighbors
-int countNeighbors(int x, int y) {
+int countNeighbors(vector<vector<string>> &grid, int x, int y) {
     int count = 0;
     
     // Iterate through neighbors by creating combinations of all possible neighbors
@@ -48,7 +100,7 @@ int countNeighbors(int x, int y) {
             int ny = y + yj;
 
             // Check if the current offset is in bounds of the screen and count if neighbor is alive
-            if (nx >= 0 && nx < height && ny >= 0 && ny < width && grid[nx][ny] == "o") {
+            if (nx >= 0 && nx < rows && ny >= 0 && ny < columns && grid[nx][ny] == "o") {
                 count++;
             }
         }
@@ -57,12 +109,12 @@ int countNeighbors(int x, int y) {
 }
 
 // Update the grid based on the rules
-void updateGrid() {
+void updateGrid(vector<vector<string>> &grid) {
     vector<vector<string>> buffer = grid; // Copy the current grid
 
-    for (int xi = 0; xi < height; xi++) {
-        for (int yj = 0; yj < width; yj++) {
-            int liveNeighbors = countNeighbors(xi, yj);
+    for (int xi = 0; xi < rows; xi++) {
+        for (int yj = 0; yj < columns; yj++) {
+            int liveNeighbors = countNeighbors(grid, xi, yj);
 
             if (grid[xi][yj] == "o") {
                 // Rule 1 or 3
@@ -82,15 +134,16 @@ void updateGrid() {
 }
 
 int main() {
-    initialize();
+    vector<vector<string>> grid;
+    initialize(grid);
 
     // Simulate for a certain number of steps
     int generations = 10;
     for (int xi = 0; xi < generations; xi++) {
         system("cls");
-        updateGrid();
+        updateGrid(grid);
         cout << "Generation " << xi + 1 << ":\n";
-        printGrid();
+        printGrid(grid);
         Sleep(1000);
     }
 
