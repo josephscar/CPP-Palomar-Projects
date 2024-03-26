@@ -1,4 +1,4 @@
-#include "MatrixTemplate.hpp"
+#include "MatrixTemplate.cpp"
 
 /**
  * @brief Creates a matrix from the given dimension and data.
@@ -7,6 +7,7 @@
  * @param data The data to be stored in the matrix.
  * @return Matrix<int> The created matrix.
  */
+
 Matrix<int> createMatrix(int d, vector<vector<int>> data);
 
 /**

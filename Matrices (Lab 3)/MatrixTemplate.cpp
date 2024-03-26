@@ -1,9 +1,10 @@
-// MatrixTemplate.cpp
-
-// MatrixTemplate.h
-#ifndef MATRIX_TEMPLATE_H
-#define MATRIX_TEMPLATE_H
-
+/**
+ * @file MatrixTemplate.cpp
+ * @brief Matrix class template inplementation
+ * 
+ * Allows for many matrix operations including osstream
+ * 
+ */ 
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -42,11 +43,13 @@ class Matrix
          * @return Matrix& A reference to the incremented matrix.
          */
         Matrix& operator++() {
+            std::cout << "Entering operator++" << std::endl;
             for (int i = 0; i < dimension; i++) {
                 for (int j = 0; j < dimension; j++) {
                     ++data[i][j]; // Preincrement each cell
                 }
             }
+            std::cout << "Exiting operator++" << std::endl;
             return *this;
         }
         
@@ -74,7 +77,7 @@ class Matrix
             Matrix<T> temp = m; // Make a copy of the current state
             for (int i = 0; i < m.dimension; i++) {
                 for (int j = 0; j < m.dimension; j++) {
-                    ++temp.data[i][j]; // Increment the original
+                    ++m.data[i][j]; // Increment the original
                 }
             }
             return temp; // Return the unmodified copy
@@ -90,7 +93,7 @@ class Matrix
             Matrix<T> temp = m; // Make a copy of the current state
             for (int i = 0; i < m.dimension; i++) {
                 for (int j = 0; j < m.dimension; j++) {
-                    --temp.data[i][j]; // Decrement the original
+                    --m.data[i][j]; // Decrement the original
                 }
             }
             return temp; // Return the unmodified copy
@@ -237,8 +240,3 @@ ostream& operator<<(ostream& os, const Matrix<T>& m){\
             }
             return os;
         }
-
-
-
-
-#endif // MATRIX_TEMPLATE_H

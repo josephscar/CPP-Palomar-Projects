@@ -11,6 +11,8 @@
         "ostream": "cpp",
         "array": "cpp",
         "sstream": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "cctype": "cpp",
+        "fstream": "cpp"
     }
 }

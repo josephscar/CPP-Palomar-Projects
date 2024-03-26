@@ -1,20 +1,33 @@
-#include "MatrixTemplate.hpp"
+/**
+ * @file main.cpp
+ * @brief Interface to carry out matrix operations
+ * 
+ * Program to allow the user to perform a set of simple matrix operations based on various inputs
+ * 
+ * @author Joseph Scarnecchia
+ * @date 2024-03-24
+ * @version 1.0
+ * 
+ */
 #include "Parser.cpp"
 
 int main() {
 
-    int d;
-
-    while (d != -1){
+    while (true){
         
-    int operation;
+    int operation,d;
     string op;
+    Matrix<int> A(d), B(d);
 
     // Ask for dimension and to set up matrix.
     cout << "\nDimension [-1 to quit program]: ";
     cin >> d;
+    if (d == -1){
+        break;
+    }
+
+    // Input matrix data
     cout << "Enter matrix as [a,b;c,d]" << endl;
-    Matrix<int> A(d), B(d);
     cout << "Input Matrix A: ";
     A = setUpMatrix(d);
     cout<< "\nA =\n" << A << endl;
@@ -50,7 +63,6 @@ int main() {
         cout<< "B =  " << endl << B << endl;
         cout << "<output>\n" << A - B << endl;
         break;
-        
 
         case 3:
         // Multiplication
@@ -67,9 +79,14 @@ int main() {
         cin >> choice;
 
         if (choice = 'a'){
-            cout << "<output>\n" << A++ << endl;
+            // Post
+            B = A++;
+            cout << "<output>\n" << B << endl;
+            cout << "<Output post increment>\n" << A << endl;
         } else if (choice = 'b') {
-            cout << "<output>\n" << ++A << endl;
+            // Pre
+            B = ++A;
+            cout << "<output>\n" << B << endl;
         }
         
         break;
@@ -79,18 +96,23 @@ int main() {
         // Post and pre Decrement
         char _choice;
         cout << "[a] for postdecrement, [b] for preincrement: ";
+        cout << "<Output post decrement>\n" << A << endl;
         cin >> choice;
 
         if (_choice = 'a'){
-            cout << "<output>\n" << A-- << endl;
+            B = A--;
+            cout << "<output>\n" << B << endl;
         } else if (_choice = 'b') {
             cout << "<output>\n" << --A << endl;
         }
+
+        break;
         
 
         case 6:
         // Transpose
         cout << "<output>\n" << A.transpose() << endl;
+        break;
         
 
         case 7:
@@ -99,6 +121,7 @@ int main() {
         cout << "Exponentiate by: ";
         cin >> exp;
         cout << "<output>\n" <<A.power(exp) << endl;
+        break;
         
 
         default:
@@ -108,7 +131,7 @@ int main() {
     }  
     }
     
-    
+    cout << "Ending program..." << endl;
     return 0;
     
     
